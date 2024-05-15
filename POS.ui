@@ -533,7 +533,7 @@ border-radius: 15px;</string>
     <widget class="QLabel" name="label_15">
      <property name="geometry">
       <rect>
-       <x>160</x>
+       <x>140</x>
        <y>790</y>
        <width>41</width>
        <height>31</height>
@@ -552,7 +552,7 @@ border-radius: 15px;</string>
     <widget class="QLabel" name="label_16">
      <property name="geometry">
       <rect>
-       <x>200</x>
+       <x>180</x>
        <y>800</y>
        <width>491</width>
        <height>21</height>
@@ -580,7 +580,7 @@ border-radius: 15px;</string>
     <widget class="QLabel" name="label_17">
      <property name="geometry">
       <rect>
-       <x>170</x>
+       <x>150</x>
        <y>830</y>
        <width>31</width>
        <height>31</height>
@@ -599,7 +599,7 @@ border-radius: 15px;</string>
     <widget class="QLabel" name="label_18">
      <property name="geometry">
       <rect>
-       <x>210</x>
+       <x>190</x>
        <y>830</y>
        <width>121</width>
        <height>31</height>
@@ -627,7 +627,7 @@ border-radius: 15px;</string>
     <widget class="QLabel" name="label_19">
      <property name="geometry">
       <rect>
-       <x>420</x>
+       <x>400</x>
        <y>830</y>
        <width>31</width>
        <height>31</height>
@@ -646,7 +646,7 @@ border-radius: 15px;</string>
     <widget class="QLabel" name="label_20">
      <property name="geometry">
       <rect>
-       <x>460</x>
+       <x>440</x>
        <y>830</y>
        <width>221</width>
        <height>31</height>
