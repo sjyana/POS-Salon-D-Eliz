@@ -414,7 +414,7 @@ border-radius: 15px;</string>
        <x>140</x>
        <y>30</y>
        <width>1141</width>
-       <height>311</height>
+       <height>321</height>
       </rect>
      </property>
      <property name="styleSheet">
@@ -434,7 +434,7 @@ border-radius: 15px;</string>
      <property name="geometry">
       <rect>
        <x>860</x>
-       <y>380</y>
+       <y>390</y>
        <width>411</width>
        <height>231</height>
       </rect>
@@ -456,7 +456,7 @@ border-radius: 15px;</string>
      <property name="geometry">
       <rect>
        <x>860</x>
-       <y>620</y>
+       <y>630</y>
        <width>411</width>
        <height>231</height>
       </rect>
@@ -490,7 +490,7 @@ border-radius: 15px;</string>
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: rgb(188,54,79);</string>
+      <string notr="true">color: rgb(85,34,41);</string>
      </property>
      <property name="text">
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Step into our elegant, relaxing environment and let us pamper &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;you with the highest level of care and attention. &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;At Salon D-Eliz, your beauty is our passion.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -522,6 +522,147 @@ border-radius: 15px;</string>
      </property>
      <property name="text">
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;justify&quot;&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;Welcome to Salon D-Eliz, where beauty meets sophistication. Our talented team &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;of stylists and beauty experts is dedicated to providing you with an exceptional &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;experience, tailored to your unique style and needs. From precision haircuts &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;and vibrant coloring to luxurious spa treatments and professional makeup, we &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;offer a comprehensive range of services designed to help you look and feel &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;your best. &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="textFormat">
+      <enum>Qt::AutoText</enum>
+     </property>
+     <property name="scaledContents">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_15">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>790</y>
+       <width>41</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap>pics/address_logo.png</pixmap>
+     </property>
+     <property name="scaledContents">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_16">
+     <property name="geometry">
+      <rect>
+       <x>200</x>
+       <y>800</y>
+       <width>491</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Classy Vogue</family>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: rgb(85,34,41);</string>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;457 Sandoval Ave. Nagpayong, Pinagbuhatan, Pasig, Philippines&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="textFormat">
+      <enum>Qt::AutoText</enum>
+     </property>
+     <property name="scaledContents">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_17">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>830</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap>pics/phone_logo.png</pixmap>
+     </property>
+     <property name="scaledContents">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_18">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>830</y>
+       <width>121</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Classy Vogue</family>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: rgb(85,34,41);</string>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;0912 683 3740&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="textFormat">
+      <enum>Qt::AutoText</enum>
+     </property>
+     <property name="scaledContents">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_19">
+     <property name="geometry">
+      <rect>
+       <x>420</x>
+       <y>830</y>
+       <width>31</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap>pics/email_logo.png</pixmap>
+     </property>
+     <property name="scaledContents">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_20">
+     <property name="geometry">
+      <rect>
+       <x>460</x>
+       <y>830</y>
+       <width>221</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Classy Vogue</family>
+       <pointsize>14</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: rgb(85,34,41);</string>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;catamoraeliza1grc@gmail.com&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="textFormat">
       <enum>Qt::AutoText</enum>
@@ -715,7 +856,7 @@ border: 0px;</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>900</width>
+          <width>318</width>
           <height>818</height>
          </rect>
         </property>
@@ -1984,7 +2125,7 @@ border-radius: 15px;</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>900</width>
+          <width>318</width>
           <height>1218</height>
          </rect>
         </property>
@@ -3830,7 +3971,7 @@ border-radius: 15px;</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>900</width>
+          <width>318</width>
           <height>818</height>
          </rect>
         </property>
@@ -5099,7 +5240,7 @@ border-radius: 15px;</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>900</width>
+          <width>318</width>
           <height>818</height>
          </rect>
         </property>
