@@ -434,7 +434,7 @@ border-radius: 15px;</string>
      <property name="geometry">
       <rect>
        <x>860</x>
-       <y>390</y>
+       <y>410</y>
        <width>411</width>
        <height>231</height>
       </rect>
@@ -456,7 +456,7 @@ border-radius: 15px;</string>
      <property name="geometry">
       <rect>
        <x>860</x>
-       <y>630</y>
+       <y>650</y>
        <width>411</width>
        <height>231</height>
       </rect>
@@ -478,7 +478,7 @@ border-radius: 15px;</string>
      <property name="geometry">
       <rect>
        <x>150</x>
-       <y>400</y>
+       <y>410</y>
        <width>631</width>
        <height>111</height>
       </rect>
@@ -506,7 +506,7 @@ border-radius: 15px;</string>
      <property name="geometry">
       <rect>
        <x>150</x>
-       <y>520</y>
+       <y>540</y>
        <width>631</width>
        <height>201</height>
       </rect>
@@ -534,7 +534,7 @@ border-radius: 15px;</string>
      <property name="geometry">
       <rect>
        <x>140</x>
-       <y>790</y>
+       <y>810</y>
        <width>41</width>
        <height>31</height>
       </rect>
@@ -553,7 +553,7 @@ border-radius: 15px;</string>
      <property name="geometry">
       <rect>
        <x>180</x>
-       <y>800</y>
+       <y>820</y>
        <width>491</width>
        <height>21</height>
       </rect>
@@ -581,7 +581,7 @@ border-radius: 15px;</string>
      <property name="geometry">
       <rect>
        <x>150</x>
-       <y>830</y>
+       <y>850</y>
        <width>31</width>
        <height>31</height>
       </rect>
@@ -600,7 +600,7 @@ border-radius: 15px;</string>
      <property name="geometry">
       <rect>
        <x>190</x>
-       <y>830</y>
+       <y>850</y>
        <width>121</width>
        <height>31</height>
       </rect>
@@ -628,7 +628,7 @@ border-radius: 15px;</string>
      <property name="geometry">
       <rect>
        <x>400</x>
-       <y>830</y>
+       <y>850</y>
        <width>31</width>
        <height>31</height>
       </rect>
@@ -647,7 +647,7 @@ border-radius: 15px;</string>
      <property name="geometry">
       <rect>
        <x>440</x>
-       <y>830</y>
+       <y>850</y>
        <width>221</width>
        <height>31</height>
       </rect>
@@ -799,7 +799,7 @@ border: 0px;</string>
       </rect>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="hair_page">
       <widget class="QLabel" name="label_6">
@@ -856,7 +856,7 @@ border: 0px;</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>318</width>
+          <width>900</width>
           <height>818</height>
          </rect>
         </property>
@@ -2125,7 +2125,7 @@ border-radius: 15px;</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>318</width>
+          <width>900</width>
           <height>1218</height>
          </rect>
         </property>
