@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QVBoxLayout, QLabel, QFrame, QMessageBox
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
 
+
 #for UI buttons
 def UI_bttns(ui):
     #navigation selection (home, add order, files tab)
@@ -47,11 +48,15 @@ def UI_bttns(ui):
 
         #payment method
         ui.bttn_cash.clicked.connect(lambda: payment_method(ui, 1))
-        ui.bttn_card.clicked.connect(lambda: payment_method(ui, 2))
+        ui.bttn_points.clicked.connect(lambda: payment_method(ui, 2))
         ui.bttn_wallet.clicked.connect(lambda: payment_method(ui, 3))
 
         ui.bttn_reset.clicked.connect(lambda: initialize_scroll_widget(ui))
         ui.bttn_checkout.clicked.connect(lambda: checkout(ui))
+
+        #admin page
+        ui.bttn_accNext.clicked.connect(lambda: admin_navigation(ui,1))
+        ui.bttn_orderNext.clicked.connect(lambda: admin_navigation(ui,2))
 
 # Initialize text fields
 def initialize_ui(ui):
@@ -272,26 +277,28 @@ def show_info_message_box(message):
         msg_box.exec_()
     
 
-#function that computer Total
+#function that computes Total
 def compute_total(ui, subtotal):
     total_amt = float(ui.label_total.text().replace("₱ ", "")) 
     total_amt += subtotal
     ui.label_total.setText("₱ " + str(total_amt))
 
+
+#function for payment method
 def payment_method(ui, x):
     if x == 1:
         ui.tabs_cash.setStyleSheet("border-radius: 15px; background-color: #F0D8DB")
-        ui.tabs_credit.setStyleSheet("border-radius: 15px; background-color: #ffffff")
+        ui.tabs_points.setStyleSheet("border-radius: 15px; background-color: #ffffff")
         ui.tabs_wallet.setStyleSheet("border-radius: 15px; background-color: #ffffff")
         payment = "Cash"
     if x == 2:
-        ui.tabs_credit.setStyleSheet("border-radius: 15px; background-color: #F0D8DB")
+        ui.tabs_points.setStyleSheet("border-radius: 15px; background-color: #F0D8DB")
         ui.tabs_cash.setStyleSheet("border-radius: 15px; background-color: #ffffff")
         ui.tabs_wallet.setStyleSheet("border-radius: 15px; background-color: #ffffff")
-        payment = "Credit / Debit"
+        payment = "D-Eliz Points"
     if x == 3:
         ui.tabs_wallet.setStyleSheet("border-radius: 15px; background-color: #F0D8DB")
-        ui.tabs_credit.setStyleSheet("border-radius: 15px; background-color: #ffffff")
+        ui.tabs_points.setStyleSheet("border-radius: 15px; background-color: #ffffff")
         ui.tabs_cash.setStyleSheet("border-radius: 15px; background-color: #ffffff")
         payment = "E-Wallet"
 
@@ -300,7 +307,7 @@ def checkout(ui):
     initialize_ui
     initialize_scroll_widget(ui)
 
-# Clear existing content in the scroll area
+# Clear existing content in the bills scroll area
 def initialize_scroll_widget(ui):
     while ui.scrollAreaWidgetContents.layout().count():
         child = ui.scrollAreaWidgetContents.layout().takeAt(0)
@@ -308,3 +315,10 @@ def initialize_scroll_widget(ui):
             child.widget().deleteLater()
 
     ui.label_total.setText("0.0")
+
+#admin page navigation
+def admin_navigation(ui, x):
+    if x == 1:
+        ui.admin_stackedWidget.setCurrentWidget(ui.allAccounts_page)
+    elif x == 2:
+        ui.admin_stackedWidget.setCurrentWidget(ui.allOrders_page)
