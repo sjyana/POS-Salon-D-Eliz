@@ -2125,7 +2125,7 @@ border-radius: 15px;</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>900</width>
+          <width>318</width>
           <height>1218</height>
          </rect>
         </property>
@@ -3396,10 +3396,16 @@ background-color: #fff5f6</string>
               <string notr="true">color:  rgb(85,34,41);</string>
              </property>
              <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;POLYGEL NAIL&lt;/p&gt;&lt;p&gt;EXTENSION&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>POLYGEL NAIL EXTENSION</string>
+             </property>
+             <property name="scaledContents">
+              <bool>false</bool>
              </property>
              <property name="alignment">
               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
              </property>
             </widget>
             <widget class="QLabel" name="label_home_85">
@@ -3971,7 +3977,7 @@ border-radius: 15px;</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>900</width>
+          <width>318</width>
           <height>818</height>
          </rect>
         </property>
@@ -4035,9 +4041,9 @@ background-color: #fff5f6</string>
              <property name="geometry">
               <rect>
                <x>190</x>
-               <y>30</y>
-               <width>101</width>
-               <height>31</height>
+               <y>20</y>
+               <width>141</width>
+               <height>51</height>
               </rect>
              </property>
              <property name="font">
@@ -4050,10 +4056,13 @@ background-color: #fff5f6</string>
               <string notr="true">color:  rgb(85,34,41);</string>
              </property>
              <property name="text">
-              <string>CLASSIC</string>
+              <string>CLASSIC EXTENSION</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
              </property>
             </widget>
             <widget class="QLabel" name="label_home_57">
@@ -4279,7 +4288,7 @@ background-color: #fff5f6</string>
               <rect>
                <x>190</x>
                <y>30</y>
-               <width>151</width>
+               <width>201</width>
                <height>31</height>
               </rect>
              </property>
@@ -4293,7 +4302,7 @@ background-color: #fff5f6</string>
               <string notr="true">color:  rgb(85,34,41);</string>
              </property>
              <property name="text">
-              <string>HYBRID</string>
+              <string>HYBRID EXTENSION</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -4574,7 +4583,7 @@ background-color: #fff5f6</string>
               <rect>
                <x>190</x>
                <y>30</y>
-               <width>141</width>
+               <width>211</width>
                <height>31</height>
               </rect>
              </property>
@@ -4588,7 +4597,7 @@ background-color: #fff5f6</string>
               <string notr="true">color:  rgb(85,34,41);</string>
              </property>
              <property name="text">
-              <string>VOLUME</string>
+              <string>VOLUME EXTENSION</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -4871,9 +4880,9 @@ background-color: #fff5f6</string>
              <property name="geometry">
               <rect>
                <x>190</x>
-               <y>30</y>
+               <y>20</y>
                <width>151</width>
-               <height>31</height>
+               <height>51</height>
               </rect>
              </property>
              <property name="font">
@@ -4886,10 +4895,13 @@ background-color: #fff5f6</string>
               <string notr="true">color:  rgb(85,34,41);</string>
              </property>
              <property name="text">
-              <string>MEGA VOLUME</string>
+              <string>MEGA VOLUME EXTENSION</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
              </property>
             </widget>
             <widget class="QLabel" name="label_home_69">
@@ -5240,7 +5252,7 @@ border-radius: 15px;</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>900</width>
+          <width>318</width>
           <height>818</height>
          </rect>
         </property>
@@ -5857,10 +5869,13 @@ background-color: #fff5f6</string>
               <string notr="true">color:  rgb(85,34,41);</string>
              </property>
              <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;EYEBROW&lt;/p&gt;&lt;p&gt;THREADING&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>EYEBROW THREADING</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
              </property>
             </widget>
             <widget class="QLabel" name="label_home_101">
@@ -7263,7 +7278,7 @@ setColumnWidth: (0, 150);</string>
        </column>
        <column>
         <property name="text">
-         <string>Total</string>
+         <string>Price</string>
         </property>
         <property name="font">
          <font>
@@ -7538,7 +7553,7 @@ color: rgb(85,34,41);
          <string notr="true">border: none</string>
         </property>
         <property name="text">
-         <string>order_num</string>
+         <string/>
         </property>
        </widget>
        <widget class="QLabel" name="nameLBL">
@@ -7589,7 +7604,7 @@ color: rgb(85,34,41);
          <string notr="true">border: none</string>
         </property>
         <property name="text">
-         <string>name</string>
+         <string/>
         </property>
        </widget>
        <widget class="QLabel" name="nameLBL_2">
@@ -7640,7 +7655,7 @@ color: rgb(85,34,41);
          <string notr="true">border: none</string>
         </property>
         <property name="text">
-         <string>date</string>
+         <string/>
         </property>
        </widget>
        <widget class="QLabel" name="nameLBL_3">
@@ -7691,7 +7706,7 @@ color: rgb(85,34,41);
          <string notr="true">border: none</string>
         </property>
         <property name="text">
-         <string>time</string>
+         <string/>
         </property>
        </widget>
        <widget class="QLabel" name="orderLBL_2">
@@ -7726,7 +7741,7 @@ color: rgb(85,34,41);
          <rect>
           <x>690</x>
           <y>30</y>
-          <width>181</width>
+          <width>261</width>
           <height>30</height>
          </rect>
         </property>
@@ -7742,7 +7757,7 @@ color: rgb(85,34,41);
          <string notr="true">border: none</string>
         </property>
         <property name="text">
-         <string>service</string>
+         <string/>
         </property>
        </widget>
        <widget class="QLabel" name="orderLBL_3">
@@ -7793,7 +7808,7 @@ color: rgb(85,34,41);
          <string notr="true">border: none</string>
         </property>
         <property name="text">
-         <string>stylist</string>
+         <string/>
         </property>
        </widget>
        <widget class="QLabel" name="orderLBL_4">
@@ -7828,7 +7843,7 @@ color: rgb(85,34,41);
          <rect>
           <x>690</x>
           <y>110</y>
-          <width>181</width>
+          <width>251</width>
           <height>30</height>
          </rect>
         </property>
@@ -7844,7 +7859,7 @@ color: rgb(85,34,41);
          <string notr="true">border: none</string>
         </property>
         <property name="text">
-         <string>note</string>
+         <string/>
         </property>
        </widget>
        <widget class="QLabel" name="orderLBL_5">
@@ -7868,7 +7883,7 @@ color: rgb(85,34,41);
          <string notr="true">border: none</string>
         </property>
         <property name="text">
-         <string>Total Amount:</string>
+         <string>Price</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -7895,7 +7910,7 @@ color: rgb(85,34,41);
          <string notr="true">border: none</string>
         </property>
         <property name="text">
-         <string>00.0</string>
+         <string/>
         </property>
        </widget>
       </widget>
@@ -8470,7 +8485,7 @@ color: rgb(85,34,41);
          <string notr="true">border: none</string>
         </property>
         <property name="text">
-         <string>00.0</string>
+         <string/>
         </property>
        </widget>
        <widget class="QLineEdit" name="text_accKey">
@@ -8494,7 +8509,7 @@ border: 1px solid gray;
 background-color:white</string>
         </property>
         <property name="text">
-         <string>account key</string>
+         <string/>
         </property>
        </widget>
        <widget class="QLineEdit" name="text_dateReg">
@@ -8518,7 +8533,7 @@ border: 1px solid gray;
 background-color:white</string>
         </property>
         <property name="text">
-         <string>yyyy-mm-dd</string>
+         <string/>
         </property>
        </widget>
        <widget class="QLineEdit" name="text_fname">
@@ -8542,10 +8557,10 @@ border: 1px solid gray;
 background-color:white</string>
         </property>
         <property name="text">
-         <string>fname</string>
+         <string/>
         </property>
        </widget>
-       <widget class="QLineEdit" name="text_accKey_12">
+       <widget class="QLineEdit" name="text_lname">
         <property name="geometry">
          <rect>
           <x>280</x>
@@ -8566,7 +8581,7 @@ border: 1px solid gray;
 background-color:white</string>
         </property>
         <property name="text">
-         <string>lname</string>
+         <string/>
         </property>
        </widget>
        <widget class="QLineEdit" name="text_contact">
@@ -8590,7 +8605,7 @@ border: 1px solid gray;
 background-color:white</string>
         </property>
         <property name="text">
-         <string>contact #</string>
+         <string/>
         </property>
        </widget>
        <widget class="QLineEdit" name="text_email">
@@ -8598,7 +8613,7 @@ background-color:white</string>
          <rect>
           <x>690</x>
           <y>100</y>
-          <width>191</width>
+          <width>221</width>
           <height>31</height>
          </rect>
         </property>
@@ -8614,7 +8629,7 @@ border: 1px solid gray;
 background-color:white</string>
         </property>
         <property name="text">
-         <string>email</string>
+         <string/>
         </property>
        </widget>
       </widget>
@@ -8965,7 +8980,7 @@ border: 0px;</string>
        </attribute>
        <column>
         <property name="text">
-         <string>Accoount Key</string>
+         <string>Account Key</string>
         </property>
         <property name="font">
          <font>

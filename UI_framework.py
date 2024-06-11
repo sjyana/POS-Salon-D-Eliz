@@ -1,11 +1,13 @@
-#file for the changes in UI when buttons are clicked
+#file for the backend
 
 import sys
-from PyQt5.QtWidgets import QVBoxLayout, QLabel, QFrame, QMessageBox
+import pyodbc
+from PyQt5.QtWidgets import QVBoxLayout, QLabel, QFrame, QMessageBox, QTreeWidgetItem
 from PyQt5.QtGui import QFont
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtBoundSignal
+from datetime import datetime
 
-
+transactions_array = []
 #for UI buttons
 def UI_bttns(ui):
     #navigation selection (home, add order, files tab)
@@ -133,7 +135,11 @@ def initialize_ui(ui):
     ui.stylist_choice_hmu.setCurrentIndex(-1)
     ui.stylist_choice_eyebrow.setCurrentIndex(-1)
 
-
+    #initialize mop buttons
+    ui.tabs_cash.setStyleSheet("border-radius: 15px; background-color: #ffffff")
+    ui.tabs_points.setStyleSheet("border-radius: 15px; background-color: #ffffff")
+    ui.tabs_wallet.setStyleSheet("border-radius: 15px; background-color: #ffffff")
+    
 
 #navigation (home, add order, admin tab)
 def navigation(ui, x):
@@ -161,6 +167,11 @@ def navigation(ui, x):
         ui.tabs_home.setStyleSheet("border-radius: 15px")
         ui.label_addOrder.setStyleSheet("color: rgb(188,54,79)")
         ui.tabs_addOrder.setStyleSheet("border-radius: 15px")
+        
+        populate_order_list(ui)
+        populate_accounts_list(ui)
+        ui.searchOrder.textChanged.connect(lambda: perform_searchOrder(ui))
+        ui.searchAccount.textChanged.connect(lambda: perform_searchAcc(ui))
 
 #services choices (hair, nail, eyelash, others)
 def services_category(ui, x):
@@ -196,8 +207,7 @@ def info_check(ui, product, price, stylist, note):
         compute_total(ui, subTotal)
 
     else:
-        show_warning_message_box("Invalid input detected")
-
+        show_warning_message_box("Invalid input detected", "Error")
 
 # Create a new panel for Bills tabs
 def create_panel(ui, product, price, stylist, note):
@@ -241,6 +251,9 @@ def create_panel(ui, product, price, stylist, note):
 
     panel.setLayout(panel_layout)
 
+    orders= [product, stylist, note, price]
+    transactions_array.append(orders)
+
     # Add the panel to the scroll area's layout
     if not ui.scrollAreaWidgetContents.layout():
         scroll_area_layout = QVBoxLayout()
@@ -250,10 +263,10 @@ def create_panel(ui, product, price, stylist, note):
     initialize_ui(ui)
 
 #message box
-def show_warning_message_box(message):
+def show_warning_message_box(message, title):
     msg_box = QMessageBox()
     msg_box.setIcon(QMessageBox.Warning)
-    msg_box.setWindowTitle("Warning")
+    msg_box.setWindowTitle(title)
     msg_box.setText(message)
     msg_box.setStandardButtons(QMessageBox.Ok)
     msg_box.setDefaultButton(QMessageBox.Ok)
@@ -263,10 +276,10 @@ def show_warning_message_box(message):
 
     msg_box.exec_()
 
-def show_info_message_box(message):
+def show_info_message_box(message, title):
         msg_box = QMessageBox()
         msg_box.setIcon(QMessageBox.Information)
-        msg_box.setWindowTitle("Information")
+        msg_box.setWindowTitle(title)
         msg_box.setText(message)
         msg_box.setStandardButtons(QMessageBox.Ok)
         msg_box.setDefaultButton(QMessageBox.Ok)
@@ -290,31 +303,32 @@ def payment_method(ui, x):
         ui.tabs_cash.setStyleSheet("border-radius: 15px; background-color: #F0D8DB")
         ui.tabs_points.setStyleSheet("border-radius: 15px; background-color: #ffffff")
         ui.tabs_wallet.setStyleSheet("border-radius: 15px; background-color: #ffffff")
-        payment = "Cash"
     if x == 2:
         ui.tabs_points.setStyleSheet("border-radius: 15px; background-color: #F0D8DB")
         ui.tabs_cash.setStyleSheet("border-radius: 15px; background-color: #ffffff")
         ui.tabs_wallet.setStyleSheet("border-radius: 15px; background-color: #ffffff")
-        payment = "D-Eliz Points"
     if x == 3:
         ui.tabs_wallet.setStyleSheet("border-radius: 15px; background-color: #F0D8DB")
         ui.tabs_points.setStyleSheet("border-radius: 15px; background-color: #ffffff")
         ui.tabs_cash.setStyleSheet("border-radius: 15px; background-color: #ffffff")
-        payment = "E-Wallet"
 
-def checkout(ui):
-    show_info_message_box("Order saved.")
-    initialize_ui
-    initialize_scroll_widget(ui)
 
 # Clear existing content in the bills scroll area
 def initialize_scroll_widget(ui):
-    while ui.scrollAreaWidgetContents.layout().count():
-        child = ui.scrollAreaWidgetContents.layout().takeAt(0)
-        if child.widget():
-            child.widget().deleteLater()
+    if ui.scrollAreaWidgetContents.layout():  # Check if layout exists
+        while ui.scrollAreaWidgetContents.layout().count():
+            child = ui.scrollAreaWidgetContents.layout().takeAt(0)
+            if child.widget():
+                child.widget().deleteLater()
+    else:
+        scroll_area_layout = QVBoxLayout()  # Create a new layout if it doesn't exist
+        ui.scrollAreaWidgetContents.setLayout(scroll_area_layout)
 
     ui.label_total.setText("0.0")
+    ui.text_name.setText("")
+    global transactions_array  # Declare transactions_array as global
+    transactions_array = []  # Initialize transactions_array as an empty list
+
 
 #admin page navigation
 def admin_navigation(ui, x):
@@ -322,3 +336,206 @@ def admin_navigation(ui, x):
         ui.admin_stackedWidget.setCurrentWidget(ui.allAccounts_page)
     elif x == 2:
         ui.admin_stackedWidget.setCurrentWidget(ui.allOrders_page)
+
+#database handling
+def create_connection():
+    conn = None
+    try:
+        # Replace 'path/to/your/database.accdb' with the actual path to your Access database file
+        conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=C:\Users\julia\Documents\Soft. Eng (POS)\salondb.accdb')
+    except pyodbc.Error as e:
+        print(f"Error creating database connection: {e}")
+
+    return conn
+
+#market basket database
+def insert_mba(conn, orders_array):
+    try:
+        cur = conn.cursor()
+        
+        # Prepare the data for MBA table
+        items = [''] * 15  # Initialize a list with 20 empty strings
+        for i in range(len(orders_array)):
+            if i < 15:
+                items[i] = orders_array[i][0]  # Assuming transactions_array[i][0] is the product
+        
+        # Construct the SQL insert statement
+        sql = """
+        INSERT INTO MBA (
+            [Service 1], [Service 2], [Service 3], [Service 4], [Service 5], [Service 6], [Service 7], [Service 8], [Service 9], 
+            [Service 10], [Service 11], [Service 12], [Service 13], [Service 14], [Service 15]
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """
+        
+        cur.execute(sql, (*items,))
+        conn.commit()
+    except pyodbc.Error as e:
+        print(f"Error inserting into MBA: {e}")
+
+def insert_order(conn, ui, date, time, name):
+    try:
+        if ui.tabs_cash.styleSheet().startswith("border-radius: 15px; background-color: #F0D8DB"):
+            pay_method = "Cash"
+        elif ui.tabs_points.styleSheet().startswith("border-radius: 15px; background-color: #F0D8DB"):
+            pay_method = "D-Eliz Points"
+        elif ui.tabs_wallet.styleSheet().startswith("border-radius: 15px; background-color: #F0D8DB"):
+            pay_method = "E-Wallet"
+        else:
+            pay_method = "Null"  # or handle the case where no payment method is selected
+
+        cur = conn.cursor()
+
+        for order in transactions_array:
+            cur.execute("INSERT INTO OrderList ([CusName], [OrderDate], [OrderTime], [Product], [Stylist], [Note], [Price], [Mode of Payment]) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (name, date, time, order[0], order[1], order[2], order[3], pay_method))
+
+        # If the length of transactions_array is more than one, insert into MBA
+        if len(transactions_array) > 1:
+            insert_mba(conn, transactions_array)
+            
+    except pyodbc.Error as e:
+        print(f"Error inserting order: {e}")
+
+
+def checkout(ui):
+    if ui.tabs_cash.styleSheet().startswith("border-radius: 15px; background-color: #ffffff") and ui.tabs_points.styleSheet().startswith("border-radius: 15px; background-color: #ffffff") and ui.tabs_wallet.styleSheet().startswith("border-radius: 15px; background-color: #ffffff"):
+        show_warning_message_box("Please enter mode of payment", "Error")
+    else:
+        if ui.text_name.text() == "":
+            show_warning_message_box("Please enter customer's name", "Error")
+        else:
+            conn = create_connection()
+            if conn:
+                now = datetime.now()
+                current_date = now.strftime("%m-%d-%Y")  # Change the date format to mm-dd-yyyy
+                current_time = ui.lblTime.text()
+                cusName = ui.text_name.text()
+                insert_order(conn, ui, current_date, current_time, cusName)
+                conn.commit()
+                conn.close()
+                show_info_message_box("Order saved.", "Success")
+                initialize_ui(ui)
+                initialize_scroll_widget(ui)
+
+#displaying orders in UI table
+def fetch_orders(conn):
+    try:
+        cur = conn.cursor()
+        cur.execute("SELECT [OrderNum], [CusName], [OrderDate], [OrderTime], [Product], [Stylist], [Note], [Price], [Mode of Payment] FROM OrderList")
+        rows = cur.fetchall()
+        return rows
+    except pyodbc.Error as e:
+        print(f"Error fetching orders: {e}")
+        return []
+
+def populate_order_list(ui):
+    conn = create_connection()
+    if conn:
+        orders = fetch_orders(conn)
+        conn.close()
+        
+        ui.orderList.clear()  # Clear any existing items
+        
+        for order in orders:
+            # Convert each row to a QTreeWidgetItem
+            item = QTreeWidgetItem([str(field) for field in order])
+            ui.orderList.addTopLevelItem(item)
+
+    ui.orderList.itemClicked.connect(lambda item, column: order_item_clicked(ui, item))
+
+def order_item_clicked(ui, item):
+    # Update labels with the item data from the clicked row
+    ui.lblOrder.setText(f'{item.text(0)}')
+    ui.lblName.setText(f'{item.text(1)}')
+    ui.lblOrderDate.setText(f'{item.text(2)}')
+    ui.lblOrderTime.setText(f'{item.text(3)}')
+    ui.lblService.setText(f'{item.text(4)}')
+    ui.lblStylist.setText(f'{item.text(5)}')
+    ui.lblNote.setText(f'{item.text(6)}')
+    ui.lblTotal.setText(f'{item.text(7)}')
+
+def initialize_tableText(ui):
+    ui.lblOrder.setText("")
+    ui.lblName.setText("")
+    ui.lblOrderDate.setText("")
+    ui.lblOrderTime.setText("")
+    ui.lblService.setText("")
+    ui.lblStylist.setText("")
+    ui.lblNote.setText("")
+    ui.lblTotal.setText("")
+    ui.text_accKey.setText("")
+    ui.text_dateReg.setText("")
+    ui.text_fname.setText("")
+    ui.text_lname.setText("")
+    ui.text_contact.setText("")
+    ui.text_email.setText("")
+    ui.lblBalance.setText("")
+
+def perform_searchOrder(ui):
+        initialize_tableText(ui)
+        text = ui.searchOrder.text().lower().strip()
+
+        if not text:
+            ui.orderList.clear()
+            populate_order_list(ui)
+            return
+        
+        for i in range(ui.orderList.topLevelItemCount()):
+            item = ui.orderList.topLevelItem(i)
+            item.setHidden(True)
+
+            for column in range(item.columnCount()):
+                if text in item.text(column).lower():
+                    item.setHidden(False)
+                    break
+
+#displaying accounts in UI table
+def fetch_accounts(conn):
+    try:
+        cur = conn.cursor()
+        cur.execute("SELECT [AccKey], [DateReg], [FName], [LName], [ContactNum], [Email], [Balance] FROM AccountsList")
+        rows = cur.fetchall()
+        return rows
+    except pyodbc.Error as e:
+        print(f"Error fetching accounts: {e}")
+        return []
+
+def populate_accounts_list(ui):
+    conn = create_connection()
+    if conn:
+        orders = fetch_accounts(conn)
+        conn.close()
+        
+        ui.accountsList.clear()
+        
+        for order in orders:
+            item = QTreeWidgetItem([str(field) for field in order])
+            ui.accountsList.addTopLevelItem(item)
+
+    ui.accountsList.itemClicked.connect(lambda item, column: accounts_item_clicked(ui, item))
+
+def accounts_item_clicked(ui, item):
+    ui.text_accKey.setText(f'{item.text(0)}')
+    ui.text_dateReg.setText(f'{item.text(1)}')
+    ui.text_fname.setText(f'{item.text(2)}')
+    ui.text_lname.setText(f'{item.text(3)}')
+    ui.text_contact.setText(f'{item.text(4)}')
+    ui.text_email.setText(f'{item.text(5)}')
+    ui.lblBalance.setText(f'{item.text(6)}')
+
+def perform_searchAcc(ui):
+        initialize_tableText(ui)
+        text = ui.searchAccount.text().lower().strip()
+
+        if not text:
+            ui.accountsList.clear()
+            populate_order_list(ui)
+            return
+        
+        for i in range(ui.accountsList.topLevelItemCount()):
+            item = ui.accountsList.topLevelItem(i)
+            item.setHidden(True)
+
+            for column in range(item.columnCount()):
+                if text in item.text(column).lower():
+                    item.setHidden(False)
+                    break
