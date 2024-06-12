@@ -1,10 +1,9 @@
 #file for the backend
 
-import sys
 import pyodbc
-from PyQt5.QtWidgets import QVBoxLayout, QLabel, QFrame, QMessageBox, QTreeWidgetItem
+from PyQt5.QtWidgets import QVBoxLayout, QLabel, QFrame, QMessageBox, QTreeWidgetItem, QInputDialog
 from PyQt5.QtGui import QFont
-from PyQt5.QtCore import Qt, pyqtBoundSignal
+from PyQt5.QtCore import Qt
 from datetime import datetime
 
 transactions_array = []
@@ -59,6 +58,11 @@ def UI_bttns(ui):
         #admin page
         ui.bttn_accNext.clicked.connect(lambda: admin_navigation(ui,1))
         ui.bttn_orderNext.clicked.connect(lambda: admin_navigation(ui,2))
+        ui.bttn_deleteOrder.clicked.connect(lambda: handle_deleteOrder(ui))
+        ui.bttn_deleteAcc.clicked.connect(lambda: handle_deleteAcc(ui))
+        ui.bttn_addAcc.clicked.connect(lambda: addAccDB(ui))
+        ui.bttn_editAcc.clicked.connect(lambda: editAccDB(ui))
+        ui.bttn_addBalance.clicked.connect(lambda: addBalance(ui))
 
 # Initialize text fields
 def initialize_ui(ui):
@@ -170,6 +174,7 @@ def navigation(ui, x):
         
         populate_order_list(ui)
         populate_accounts_list(ui)
+        initialize_tableText(ui)
         ui.searchOrder.textChanged.connect(lambda: perform_searchOrder(ui))
         ui.searchAccount.textChanged.connect(lambda: perform_searchAcc(ui))
 
@@ -354,7 +359,7 @@ def insert_mba(conn, orders_array):
         cur = conn.cursor()
         
         # Prepare the data for MBA table
-        items = [''] * 15  # Initialize a list with 20 empty strings
+        items = [''] * 15  # Initialize a list with 15 empty strings
         for i in range(len(orders_array)):
             if i < 15:
                 items[i] = orders_array[i][0]  # Assuming transactions_array[i][0] is the product
@@ -372,25 +377,35 @@ def insert_mba(conn, orders_array):
     except pyodbc.Error as e:
         print(f"Error inserting into MBA: {e}")
 
-def insert_order(conn, ui, date, time, name):
-    try:
-        if ui.tabs_cash.styleSheet().startswith("border-radius: 15px; background-color: #F0D8DB"):
-            pay_method = "Cash"
-        elif ui.tabs_points.styleSheet().startswith("border-radius: 15px; background-color: #F0D8DB"):
-            pay_method = "D-Eliz Points"
-        elif ui.tabs_wallet.styleSheet().startswith("border-radius: 15px; background-color: #F0D8DB"):
-            pay_method = "E-Wallet"
-        else:
-            pay_method = "Null"  # or handle the case where no payment method is selected
 
+def fetch_latest_order_num(conn):
+    try:
+        cur = conn.cursor()
+        cur.execute("SELECT MAX(OrderNum) FROM OrderList")
+        max_order_num = cur.fetchone()[0]
+        return max_order_num if max_order_num is not None else 0
+    except pyodbc.Error as e:
+        print(f"Error fetching latest order number: {e}")
+        return 0
+    
+def insert_order(conn, ui, date, time, name, pay_method):
+    try:
         cur = conn.cursor()
 
+        # Insert each transaction into OrderList with the new OrderNum
         for order in transactions_array:
-            cur.execute("INSERT INTO OrderList ([CusName], [OrderDate], [OrderTime], [Product], [Stylist], [Note], [Price], [Mode of Payment]) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (name, date, time, order[0], order[1], order[2], order[3], pay_method))
-
+            latest_order_num = fetch_latest_order_num(conn)
+            new_order_num = latest_order_num + 1
+            cur.execute("INSERT INTO OrderList ([OrderNum], [CusName], [OrderDate], [OrderTime], [Product], [Stylist], [Note], [Price], [Mode of Payment]) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", 
+                        (new_order_num, name, date, time, order[0], order[1], order[2], order[3], pay_method))
+            
         # If the length of transactions_array is more than one, insert into MBA
         if len(transactions_array) > 1:
             insert_mba(conn, transactions_array)
+        
+        show_info_message_box("Order saved.", "Success")
+        initialize_ui(ui)
+        initialize_scroll_widget(ui)
             
     except pyodbc.Error as e:
         print(f"Error inserting order: {e}")
@@ -409,12 +424,52 @@ def checkout(ui):
                 current_date = now.strftime("%m-%d-%Y")  # Change the date format to mm-dd-yyyy
                 current_time = ui.lblTime.text()
                 cusName = ui.text_name.text()
-                insert_order(conn, ui, current_date, current_time, cusName)
+
+                if ui.tabs_cash.styleSheet().startswith("border-radius: 15px; background-color: #F0D8DB"):
+                    pay_method = "Cash"
+                    insert_order(conn, ui, current_date, current_time, cusName, pay_method)
+                elif ui.tabs_points.styleSheet().startswith("border-radius: 15px; background-color: #F0D8DB"):
+                    pay_method = "D-Eliz Points"
+                    useBalance(ui, current_date, current_time, cusName, pay_method)
+                elif ui.tabs_wallet.styleSheet().startswith("border-radius: 15px; background-color: #F0D8DB"):
+                    pay_method = "E-Wallet"
+                    insert_order(conn, ui, current_date, current_time, cusName, pay_method)
+
                 conn.commit()
                 conn.close()
-                show_info_message_box("Order saved.", "Success")
-                initialize_ui(ui)
-                initialize_scroll_widget(ui)
+
+#salon d-eliz points mop
+def useBalance(ui, current_date, current_time, cusName, pay_method):
+    conn = create_connection()
+    if conn:
+        try:
+            acc_key, ok = QInputDialog.getInt(None, "Account Key", "Enter Account Key:")
+            if ok:
+                if acc_key_exists(conn, acc_key):
+                    current_balance = fetch_balance_points(conn, acc_key)
+                    if current_balance is not None:
+                        current_balance = float(current_balance) 
+                        total_amt = float(ui.label_total.text().replace("₱ ", "")) 
+                        if current_balance >= total_amt:
+                            new_balance = current_balance - total_amt
+                            # Update the balance points of the existing account
+                            cur = conn.cursor()
+                            cur.execute("""
+                                UPDATE AccountsList 
+                                SET Balance = ?
+                                WHERE AccKey = ?
+                            """, (new_balance, acc_key))
+                            conn.commit()
+                            show_info_message_box(f"New balance: {new_balance}", "Transaction Successful")
+                            insert_order(conn, ui, current_date, current_time, cusName, pay_method)
+                        else:
+                            show_warning_message_box("Insufficient balance.", "Transaction Error")
+                    else:
+                        show_warning_message_box("Current balance is None.", "Transaction Error")
+                else:
+                    show_warning_message_box("Account key not found.", "Transaction Error")
+        except pyodbc.Error as e:
+            show_warning_message_box(f"Transaction Error: {e}", "Error")
 
 #displaying orders in UI table
 def fetch_orders(conn):
@@ -468,7 +523,7 @@ def initialize_tableText(ui):
     ui.text_lname.setText("")
     ui.text_contact.setText("")
     ui.text_email.setText("")
-    ui.lblBalance.setText("")
+    ui.lblBalance.setText("0")
 
 def perform_searchOrder(ui):
         initialize_tableText(ui)
@@ -487,6 +542,50 @@ def perform_searchOrder(ui):
                 if text in item.text(column).lower():
                     item.setHidden(False)
                     break
+
+#delete order function
+def delete_order(conn, order_num):
+    try:
+        cur = conn.cursor()
+        cur.execute("DELETE FROM OrderList WHERE OrderNum = ?", (order_num,))
+        conn.commit()
+        print(f"Order {order_num} deleted successfully.")
+    except pyodbc.Error as e:
+        show_warning_message_box("Error deleting order", "Error")
+
+def update_order_numbers(conn, deleted_order_num):
+    try:
+        cur = conn.cursor()
+        cur.execute("UPDATE OrderList SET OrderNum = OrderNum - 1 WHERE OrderNum > ?", (deleted_order_num,))
+        conn.commit()
+    except pyodbc.Error as e:
+        print(f"Error updating order numbers: {e}")
+
+def handle_deleteOrder(ui):
+    selected_items = ui.orderList.selectedItems()
+    if not selected_items:
+        QMessageBox.warning(ui, "Delete Order", "Please select an order to delete.")
+        return
+    
+    selected_item = selected_items[0]
+    order_num = int(selected_item.text(0))  # Convert to integer to maintain consistency
+    
+    reply = QMessageBox.question(ui, "Delete Order", "Are you sure you want to delete the selected order?", 
+                                 QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+    
+    if reply == QMessageBox.Yes:
+        conn = create_connection()
+        if conn:
+            delete_order(conn, order_num)
+            update_order_numbers(conn, order_num)
+            conn.close()
+            
+            populate_order_list(ui)
+            QMessageBox.information(ui, "Delete Order", "Order deleted successfully.")
+    else:
+        QMessageBox.information(ui, "Delete Order", "Order deletion canceled.")
+        populate_order_list(ui)
+        initialize_tableText(ui)
 
 #displaying accounts in UI table
 def fetch_accounts(conn):
@@ -539,3 +638,151 @@ def perform_searchAcc(ui):
                 if text in item.text(column).lower():
                     item.setHidden(False)
                     break
+
+#delete account function
+def delete_account(conn, acc_key):
+    try:
+        cur = conn.cursor()
+        cur.execute("DELETE FROM AccountsList WHERE AccKey = ?", (acc_key,))
+        conn.commit()
+    except pyodbc.Error as e:
+        print(f"Error deleting account: {e}")
+
+def handle_deleteAcc(ui):
+    selected_items = ui.accountsList.selectedItems()
+    if not selected_items:
+        QMessageBox.warning(ui, "Delete Account", "Please select an account to delete.")
+        return
+    
+    selected_item = selected_items[0]
+    acc_key = selected_item.text(0)
+    
+    reply = QMessageBox.question(ui, "Delete Account", "Are you sure you want to delete the selected account?", 
+                                 QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+    
+    if reply == QMessageBox.Yes:
+        conn = create_connection()
+        if conn:
+            delete_account(conn, acc_key)
+            conn.close()
+            
+            populate_accounts_list(ui)
+            initialize_tableText(ui)
+            QMessageBox.information(ui, "Delete Account", "Account deleted successfully.")
+    else:
+        QMessageBox.information(ui, "Delete Account", "Account deletion canceled.")
+        populate_accounts_list(ui)
+        initialize_tableText(ui)
+
+#add and update account
+def acc_key_exists(conn, acc_key):
+    try:
+        cur = conn.cursor()
+        cur.execute("SELECT 1 FROM AccountsList WHERE AccKey = ?", (acc_key,))
+        row = cur.fetchone()
+        return row is not None
+    except pyodbc.Error as e:
+        print(f"Error checking AccKey: {e}")
+        return False
+
+def editAccDB(ui):
+    conn = create_connection()
+    if conn:
+        try:
+            acc_key = ui.text_accKey.text()
+            date_reg = ui.text_dateReg.text()
+            f_name = ui.text_fname.text()
+            l_name = ui.text_lname.text()
+            contact_num = ui.text_contact.text()
+            email = ui.text_email.text()
+            balance = ui.lblBalance.text()
+
+            if acc_key_exists(conn, acc_key):
+                # Update the existing account
+                cur = conn.cursor()
+                cur.execute("""
+                    UPDATE AccountsList 
+                    SET DateReg = ?, FName = ?, LName = ?, ContactNum = ?, Email = ?, Balance = ? 
+                    WHERE AccKey = ?
+                """, (date_reg, f_name, l_name, contact_num, email, balance, acc_key))
+                conn.commit()
+                show_info_message_box(f"Account with AccKey {acc_key} updated successfully.", "Update Account")
+                populate_accounts_list(ui)
+                initialize_tableText(ui)
+            else:
+                show_warning_message_box("Account key not found.", "Update Account Error")
+        except pyodbc.Error as e:
+            show_warning_message_box(f"Error updating account: {e}", "Error")
+        finally:
+            conn.close()
+
+def addAccDB(ui):
+    conn = create_connection()
+    if conn:
+        try:
+            acc_key = ui.text_accKey.text()
+            date_reg = ui.text_dateReg.text()
+            f_name = ui.text_fname.text()
+            l_name = ui.text_lname.text()
+            contact_num = ui.text_contact.text()
+            email = ui.text_email.text()
+            balance = ui.lblBalance.text()
+
+            if acc_key_exists(conn, acc_key):
+                show_warning_message_box("Account key not available.", "Add Account Error")
+            else:
+                # Insert a new account
+                cur = conn.cursor()
+                cur.execute("""
+                    INSERT INTO AccountsList (AccKey, DateReg, FName, LName, ContactNum, Email, Balance) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                """, (acc_key, date_reg, f_name, l_name, contact_num, email, balance))
+                conn.commit()
+                show_info_message_box(f"New account with AccKey {acc_key} inserted successfully.", "Add Account")
+                populate_accounts_list(ui)
+                initialize_tableText(ui)
+        except pyodbc.Error as e:
+            show_warning_message_box(f"Error saving new account: {e}", "Error")
+        finally:
+            conn.close()
+
+
+def fetch_balance_points(conn, acc_key):
+    try:
+        cur = conn.cursor()
+        cur.execute("SELECT Balance FROM AccountsList WHERE AccKey = ?", (acc_key,))
+        row = cur.fetchone()
+        if row:
+            return row[0]  # Return the balance points if the account is found
+        else:
+            return None  # Return None if the account is not found
+    except pyodbc.Error as e:
+        print(f"Error fetching balance points: {e}")
+        return None
+
+def addBalance(ui):
+    conn = create_connection()
+    if conn:
+        try:
+            acc_key = ui.text_accKey.text()
+            current_balance = fetch_balance_points(conn, acc_key)
+            points, ok = QInputDialog.getInt(None, "Add Points", "Enter the amount of points to add:")
+            if ok:
+                if current_balance is not None:
+                    current_balance = float(current_balance) 
+                    new_balance = current_balance + points
+                    # Update the balance points of the existing account
+                    cur = conn.cursor()
+                    cur.execute("""
+                        UPDATE AccountsList 
+                        SET Balance = ?
+                        WHERE AccKey = ?
+                    """, (new_balance, acc_key))
+                    conn.commit()
+                    show_info_message_box(f"Added {points} points to the account with AccKey {acc_key}. New balance: {new_balance}", "Balance Added Successfully")
+                    populate_accounts_list(ui)
+                    initialize_tableText(ui)
+            else:
+                show_warning_message_box("Account key not found.", "Add Balance Points Error")
+        except pyodbc.Error as e:
+            show_warning_message_box(f"Error updating balance points: {e}", "Error")
