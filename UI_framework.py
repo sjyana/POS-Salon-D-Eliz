@@ -1,10 +1,10 @@
 #file for the backend
-
 import pyodbc
 from PyQt5.QtWidgets import QVBoxLayout, QLabel, QFrame, QMessageBox, QTreeWidgetItem, QInputDialog
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
 from datetime import datetime
+from market_basket_analysis import run_mba
 
 transactions_array = []
 #for UI buttons
@@ -63,6 +63,7 @@ def UI_bttns(ui):
         ui.bttn_addAcc.clicked.connect(lambda: addAccDB(ui))
         ui.bttn_editAcc.clicked.connect(lambda: editAccDB(ui))
         ui.bttn_addBalance.clicked.connect(lambda: addBalance(ui))
+        ui.bttn_generateMBA.clicked.connect(lambda: run_mba())
 
 # Initialize text fields
 def initialize_ui(ui):

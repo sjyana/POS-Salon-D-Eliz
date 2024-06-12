@@ -1,7 +1,7 @@
 import pandas as pd
 from mlxtend.frequent_patterns import apriori, association_rules
 import pyodbc
-from UI_framework import show_info_message_box, show_warning_message_box
+from PyQt5.QtWidgets import QMessageBox
 
 def convert_accdb_to_csv():
     # Establish connection to the Access database
@@ -105,3 +105,30 @@ def store_association_rules_to_database(rules):
         # Close the cursor and connection
         cursor.close()
         conn.close()
+
+#message box
+def show_warning_message_box(message, title):
+    msg_box = QMessageBox()
+    msg_box.setIcon(QMessageBox.Warning)
+    msg_box.setWindowTitle(title)
+    msg_box.setText(message)
+    msg_box.setStandardButtons(QMessageBox.Ok)
+    msg_box.setDefaultButton(QMessageBox.Ok)
+
+    button_ok = msg_box.button(QMessageBox.Ok)
+    button_ok.clicked.connect(msg_box.reject)  # Prevent UI exit on 'OK' button click
+
+    msg_box.exec_()
+
+def show_info_message_box(message, title):
+        msg_box = QMessageBox()
+        msg_box.setIcon(QMessageBox.Information)
+        msg_box.setWindowTitle(title)
+        msg_box.setText(message)
+        msg_box.setStandardButtons(QMessageBox.Ok)
+        msg_box.setDefaultButton(QMessageBox.Ok)
+
+        button_ok = msg_box.button(QMessageBox.Ok)
+        button_ok.clicked.connect(msg_box.reject) 
+
+        msg_box.exec_()
